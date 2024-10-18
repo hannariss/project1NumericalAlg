@@ -5,6 +5,7 @@ class FNN():
     def __init__(self, layer_sizes):
         self.layer_sizes = layer_sizes
         self.T = 2
+        self.weights = [np.random.randn(y, x) for x, y in zip(layer_sizes[:-1]+np.array(1), layer_sizes[1:])] #weights creates an array containing two arrays: weights for V0 to V1 and weights for V1 to V2
     
     def sigmoid(self, z):
         """The sigmoid function."""
