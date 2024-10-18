@@ -36,24 +36,23 @@ class FNN():
                     gradient_sum = [grad_init+grad_xy for grad_init, grad_xy in zip(grad_initialise, gradient_xy)] #addition of single gradients
                 self.weights = [w-(eta/len(mini_batch))*g for w, g in zip(self.weights, gradient_sum)]
             if test_data:
-                print("Epoch {0}: {1} / {2}".format(
-                    j, self.evaluate(test_data), n_test))
+                print("Epoch {0}: {1} / {2} correct predictions".format(j + 1, self.evaluate(test_data), n_test))
             else:
-                print("Epoch {0} complete".format(j))
+                print("Epoch {0} complete".format(j + 1))
     
-    def backprop(self, x, y, weights):
-        grad = [np.zeros(w.shape) for w in weights]
+    def backprop(self, x, y):
+        grad = [np.zeros(w.shape) for w in self.weights]
 
         # forward
         input = np.append(x, [1])
         a_vecs = [] # store activations of each layer
-        outs = [x] # store outputs of each layer
+        outs = [input] # store outputs of each layer
         l = 1 # current layer
-        for w in weights:
+        for w in self.weights:
             l += 1
             a = np.dot(w, input)
             a_vecs.append(a)
-            out = self.sigma(a)
+            out = self.sigmoid(a)
             if not l == len(self.layer_sizes): # If we're not in the last layer, append 1 (bias)
                 out = np.append(out, [1])
             outs.append(out)
@@ -64,8 +63,8 @@ class FNN():
         for l in range(1, self.T):
             a = a_vecs[-l]
             sp = self.sigmoid_prime(a)
-            delta = np.dot(weights[-l].T, delta * sp)
-            grad[-l-1] = np.outer((delta * self.sigmoid_prime(a_vecs[-l-1])), outs[-l-2])
+            delta = np.dot(self.weights[-l].T, (delta * sp))
+            grad[-l-1] = np.outer((delta[:-1] * self.sigmoid_prime(a_vecs[-l-1])), outs[-l-2])
         return grad
 
     def evaluate(self, test_data):
@@ -87,7 +86,7 @@ class FNN():
         for (x, y) in test_data:
             output_activations = self.prediction(x)
             predicted_number = np.argmax(output_activations)
-            if predicted_number == y: # Check if the prediction matches the actual label
+            if predicted_number == np.argmax(y): # Check if the prediction matches the actual label
                 correct_predictions += 1  # Increment counter if correct
         
         return correct_predictions
