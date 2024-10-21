@@ -4,4 +4,8 @@ import load_data
 training_data, validation_data, test_data = load_data.data_control()
 
 network = NN_methods.FNN([784, 30, 10])
-network.SGD(training_data, 30, 10, 3.0, test_data=test_data)
+network.SGD(training_data, 15, 10, 3.0, test_data=test_data)
+
+# Attack
+correct_on_attack = network.test_accuracy(test_data, attack=True, epsilon=0.01)
+print(f"\n After attack: {correct_on_attack} / {len(test_data)} correct predictions")
