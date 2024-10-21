@@ -8,4 +8,4 @@ network.SGD(training_data, 15, 10, 3.0, test_data=test_data)
 
 # Attack
 correct_on_attack = network.test_accuracy(test_data, attack=True, epsilon=0.01)
-print(f"\n After attack: {correct_on_attack} / {len(test_data)} correct predictions")
+print(f"\nAfter attack: {correct_on_attack} / {len(test_data)} correct predictions")
