@@ -24,7 +24,6 @@ class FNN():
         return out
     
     def SGD(self, training_data, epochs, mini_batch_size, eta, test_data=None):
-        if test_data: n_test = len(test_data)
         n = len(training_data)
         for j in range(epochs):
             random.shuffle(training_data)
@@ -36,7 +35,8 @@ class FNN():
                     gradient_sum = [grad_init+grad_xy for grad_init, grad_xy in zip(grad_initialise, gradient_xy)] #addition of single gradients
                 self.weights = [w-(eta/len(mini_batch))*g for w, g in zip(self.weights, gradient_sum)]
             if test_data:
-                print("Epoch {0}: {1} / {2} correct predictions".format(j + 1, self.evaluate(test_data), n_test))
+                n_test = len(test_data)
+                print("Epoch {0}: {1} / {2} correct predictions".format(j + 1, self.test_accuracy(test_data), n_test))
             else:
                 print("Epoch {0} complete".format(j + 1))
     
@@ -67,7 +67,7 @@ class FNN():
             grad[-l-1] = np.outer((delta[:-1] * self.sigmoid_prime(a_vecs[-l-1])), outs[-l-2])
         return grad
 
-    def evaluate(self, test_data):
+    def test_accuracy(self, test_data):
         """
         Return the number of test inputs for which the neural network
         outputs the correct result.
