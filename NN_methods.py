@@ -31,7 +31,7 @@ class FNN():
             for mini_batch in mini_batches:
                 grad_initialise = [np.zeros(w.shape) for w in self.weights] #initialise array with shape w for later addition of every gradient
                 for x, y in mini_batch:
-                    gradient_xy = self.backprop(x, y)
+                    gradient_xy = self.backprop(x, y)[0]
                     gradient_sum = [grad_init+grad_xy for grad_init, grad_xy in zip(grad_initialise, gradient_xy)] #addition of single gradients
                 self.weights = [w-(eta/len(mini_batch))*g for w, g in zip(self.weights, gradient_sum)]
             if test_data:
@@ -63,11 +63,14 @@ class FNN():
         for l in range(1, self.T):
             a = a_vecs[-l]
             sp = self.sigmoid_prime(a)
-            delta = np.dot(self.weights[-l].T, (delta * sp))
-            grad[-l-1] = np.outer((delta[:-1] * self.sigmoid_prime(a_vecs[-l-1])), outs[-l-2])
-        return grad
-
-    def test_accuracy(self, test_data):
+            delta = np.dot(self.weights[-l].T, (delta * sp))[:-1]
+            grad[-l-1] = np.outer((delta * self.sigmoid_prime(a_vecs[-l-1])), outs[-l-2])
+         
+        # Calculate gradient w.r.t. input (x)
+        grad_input = np.dot(self.weights[0].T, (delta * self.sigmoid_prime(a_vecs[0])))[:-1] 
+        return grad, grad_input
+    
+    def test_accuracy(self, test_data, attack=False, epsilon=0.1):
         """
         Return the number of test inputs for which the neural network
         outputs the correct result.
@@ -84,9 +87,34 @@ class FNN():
         
         # Process each input (x) and label (y) in the test dataset
         for (x, y) in test_data:
+            if attack:
+                x = self.fgsm_attack(x, y, epsilon)
             output_activations = self.prediction(x)
             predicted_number = np.argmax(output_activations)
             if predicted_number == np.argmax(y): # Check if the prediction matches the actual label
                 correct_predictions += 1  # Increment counter if correct
         
         return correct_predictions
+    
+    def fgsm_attack(self, x, y, epsilon):
+        """
+        Perform FGSM attack to generate an adversarial example.
+        
+        Args:
+            network: Trained neural network model.
+            x: Input image (e.g., flattened vector).
+            y: True label
+            epsilon: Perturbation magnitude
+        
+        Returns:
+            Perturbed input.
+        """
+        # Perform backpropagation to compute the gradient of the loss with respect to the input
+        grad = self.backprop(x, y)[1] 
+        perturbed_x = x + epsilon * np.sign(grad) # Generate the perturbation using the sign of the input gradient
+        
+        # Clip values to ensure the input data is within valid range (e.g., 0-1 for image pixels)
+        perturbed_x = np.clip(perturbed_x, 0, 1)
+        
+        return perturbed_x
+   
