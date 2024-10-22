@@ -24,6 +24,22 @@ class FNN():
         return out
     
     def SGD(self, training_data, epochs, mini_batch_size, eta, test_data=None):
+        """
+        Stochastic gradient method for FNN
+
+        Parameters:
+        training_data: list containing np.arrays
+            training data loaded and processed by the load_data.py file
+        epochs: int
+            number of epochs to train for
+        mini_batch_size: int
+            size of mini-batches
+        eta: float
+            learning rate
+        test_data: list containing np.arrays
+            optional input, if provided then the the algorithm will evaluate after each epoch the training progress
+
+        """
         n = len(training_data)
         for j in range(epochs):
             random.shuffle(training_data)
