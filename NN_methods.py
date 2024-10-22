@@ -6,7 +6,7 @@ class FNN():
         """
         Create feedforward neural netword
         
-        Args:
+        Parameters:
             layer_sizes: np.array, each entry represents one layer and defines its size
         """
         self.layer_sizes = layer_sizes
@@ -25,11 +25,13 @@ class FNN():
         """
         Computes output of neural network (prediction) by iteratively calculating outputs of each layer
 
-        Args:
-            x_0: np.array, input to the neural network 
+        Parameters:
+            x_0: np.array
+                input to the neural network 
 
         Return: 
-            out: np.array, predicted label corresponding to given input
+            out: np.array
+                predicted label corresponding to given input
         """
         out = x_0
         for w in self.weights:
@@ -43,16 +45,16 @@ class FNN():
         Stochastic gradient method for FNN
 
         Parameters:
-        training_data: list containing np.arrays
-            training data loaded and processed by the load_data.py file
-        epochs: int
-            number of epochs to train for
-        mini_batch_size: int
-            size of mini-batches
-        eta: float
-            learning rate
-        test_data: list containing np.arrays
-            optional input, if provided then the the algorithm will evaluate after each epoch the training progress
+            training_data: list containing np.arrays
+                training data loaded and processed by the load_data.py file
+            epochs: int
+                number of epochs to train for
+            mini_batch_size: int
+                size of mini-batches
+            eta: float
+                learning rate
+            test_data: list containing np.arrays
+                optional input, if provided then the the algorithm will evaluate after each epoch the training progress
 
         """
         n = len(training_data)
@@ -75,13 +77,17 @@ class FNN():
         """
         Perform backpropagation to approximate gradient of the loss function.
 
-        Args:
-            x: np.array, input to the neural network 
-            y: np.array, true expected output
+        Parameters:
+            x: np.array
+                input to the neural network 
+            y: np.array
+                true expected output
 
         Return:
-            grad: np.array, contains matrices of gradients with respect to the weights of the network (used in SGD)
-            grad_input: np.array, contains gradients with respect to input neurons (used in attack)
+            grad: np.array
+                contains matrices of gradients with respect to the weights of the network (used in SGD)
+            grad_input: np.array
+                contains gradients with respect to input neurons (used in attack)
         """
         grad = [np.zeros(w.shape) for w in self.weights] # initialize array for gradients in shape of weights array
         input = np.append(x, [1])                        # append bias node
@@ -121,12 +127,14 @@ class FNN():
         Return the number of test inputs for which the neural network
         outputs the correct result.
         
-        Args:
+        Paramters:
             test_data: List of tuples (x, y) where
                     - x is the input to the network
                     - y is the actual expected output (label)
-            attack: boolean, set true when accuracy is tested after attack 
-            epsilon: float, Perturbation magnitude (value range: [0, 1])
+            attack: boolean
+                set true when accuracy is tested after attack 
+            epsilon: float
+                Perturbation magnitude (value range: [0, 1])
         
         Returns:
             The count of correct predictions made by the network.
@@ -149,11 +157,13 @@ class FNN():
         """
         Perform FGSM attack to generate an input with perturbation.
         
-        Args:
-            network: Trained neural network model.
-            x: Input image (e.g., flattened vector).
-            y: True label
-            epsilon: Perturbation magnitude
+        Parameters:
+            x: np.array
+                input to the neural network 
+            y: np.array
+                true expected output
+            epsilon: float
+                Perturbation magnitude (value range: [0, 1])
         
         Returns:
             Perturbed input.
