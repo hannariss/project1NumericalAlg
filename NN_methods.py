@@ -6,7 +6,7 @@ class FNN():
         """
         Create feedforward neural netword
         
-        Args:
+        Parameters:
             layer_sizes: np.array, each entry represents one layer and defines its size
         """
         self.layer_sizes = layer_sizes
