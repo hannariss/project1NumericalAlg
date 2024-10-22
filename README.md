@@ -2,8 +2,7 @@
 
 **Authors:** Johanna Rissbacher, Jule Grimm
 
-**Note:**
-
+**Note:** Johanna mainly worked on the SGD method and load_data.py file and Jule on backpropagation and fgsm_attack. On the rest of the project we worked together.
 
 ## Project Structure
 
