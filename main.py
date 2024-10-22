@@ -2,7 +2,7 @@ import NN_methods
 import load_data
 
 # Load data
-training_data, validation_data, test_data = load_data.data_control()
+training_data, validation_data, test_data = load_data.process_data()
 
 # Train network
 network = NN_methods.FNN([784, 30, 10])
