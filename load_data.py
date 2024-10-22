@@ -6,12 +6,26 @@ import os
 PATH_DATA = os.path.join('.', 'data', 'mnist.pkl.gz')
 
 def load_data(path = PATH_DATA):
+    """
+    load provided MNIST data
+    """
     f = gzip.open(path)
     training_data, validation_data, test_data = pickle.load(f, encoding='latin1')
     f.close()
     return (training_data, validation_data, test_data)
 
 def data_control():
+    """
+    Convert original data into a data structure more convienient for NN
+    eg. Training_data consists of a tuple (np.array(x), np.array(y)), x containing 50.000 entries (arrays) with each 784 values (28x28 pixels)
+    -> reshape each array in x to an array(784, )
+    y gets turned into (10, ) array filled with zero, except on the position of the number it represents (there will be placed a 1)
+    (this is achieved by usining the function training_output_vector)
+
+    Returns:
+    out: list containing tuples of two arrays for x and y, list((np.array(784,), np.array(10,)),....)
+        each for training, test and validation data
+    """
     tr, val, test = load_data()
 
     # Reshape training data x and y
