@@ -8,6 +8,11 @@ PATH_DATA = os.path.join('.', 'data', 'mnist.pkl.gz')
 def load_data(path = PATH_DATA):
     """
     load provided MNIST data
+
+    Data format:
+    training data (50 000): tuple of (array(50 000 arrays with 28x28 values), array(50 000 values containing corresponding number to picture))
+    validation data (10 000): same structure as training data
+    test data (10 000): same structure as training data
     """
     f = gzip.open(path)
     training_data, validation_data, test_data = pickle.load(f, encoding='latin1')
@@ -30,18 +35,18 @@ def process_data():
     tr, val, test = load_data()
 
     # Reshape training data x and y
-    training_x = [np.reshape(x, (784,)) for x in tr[0]]  # Flatten to 1D array (784,)
-    training_y = [output_vector(y) for y in tr[1]]  # Output is 1D array (10,)
+    training_x = [np.reshape(x, (784,)) for x in tr[0]]
+    training_y = [output_vector(y) for y in tr[1]] 
     training_data = list(zip(training_x, training_y))
 
     # Reshape validation data x and y
-    validation_x = [np.reshape(x, (784,)) for x in val[0]]  # Flatten to 1D array (784,)
-    validation_y = [output_vector(y) for y in val[1]]  # Output is 1D array (10,)
+    validation_x = [np.reshape(x, (784,)) for x in val[0]]
+    validation_y = [output_vector(y) for y in val[1]]
     validation_data = list(zip(validation_x, validation_y))
 
     # Reshape test data x and y
-    test_x = [np.reshape(x, (784,)) for x in test[0]]  # Flatten to 1D array (784,)
-    test_y = [output_vector(y) for y in test[1]]  # Output is 1D array (10,)
+    test_x = [np.reshape(x, (784,)) for x in test[0]]
+    test_y = [output_vector(y) for y in test[1]] 
     test_data = list(zip(test_x, test_y))
     
     return (training_data, validation_data, test_data)
