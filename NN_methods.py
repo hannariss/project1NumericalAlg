@@ -126,7 +126,8 @@ class FNN():
     def test_accuracy(self, test_data, attack=False, epsilon=0.1):
         """
         Return the number of test inputs for which the neural network
-        outputs the correct result.
+        outputs the correct result as well as the loss calculated by 
+        using the quadratic loss function.
         
         Paramters:
             test_data: List of tuples (x, y) where
@@ -138,7 +139,7 @@ class FNN():
                 Perturbation magnitude (value range: [0, 1])
         
         Returns:
-            The count of correct predictions made by the network.
+            The count of correct predictions made by the network and the loss.
         """
         correct_predictions = 0  # Initialize counter for correct classifications
         loss = 0
