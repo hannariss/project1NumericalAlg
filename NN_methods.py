@@ -69,7 +69,8 @@ class FNN():
                 self.weights = [w-(eta/len(mini_batch))*g for w, g in zip(self.weights, gradient_sum)]
             if test_data:
                 n_test = len(test_data)
-                print("Epoch {0}: {1} / {2} correct predictions".format(j + 1, self.test_accuracy(test_data), n_test))
+                correct_predictions, loss = self.test_accuracy(test_data)
+                print("Epoch {0}: {1} / {2} correct predictions. Loss = {3}".format(j + 1, correct_predictions, n_test, np.round(loss, decimals=3)))
             else:
                 print("Epoch {0} complete".format(j + 1))
     
@@ -140,18 +141,20 @@ class FNN():
             The count of correct predictions made by the network.
         """
         correct_predictions = 0  # Initialize counter for correct classifications
-        
+        loss = 0
         # Process each input (x) and label (y) in the test dataset
         for (x, y) in test_data:
             if attack:
                 x = self.fgsm_attack(x, y, epsilon) # Use perturbed x as input if we perform an attack
             
-            output_activations = self.feedforward(x)
-            predicted_number = np.argmax(output_activations) 
+            output = self.feedforward(x)
+            predicted_number = np.argmax(output) 
             if predicted_number == np.argmax(y): # Check if the prediction matches the actual label
                 correct_predictions += 1
-        
-        return correct_predictions
+            loss += np.linalg.norm(output - y)**2
+
+        loss = 1 / (2 * len(test_data)) * loss   
+        return correct_predictions, loss
     
     def fgsm_attack(self, x, y, epsilon):
         """
