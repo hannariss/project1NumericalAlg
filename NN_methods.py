@@ -11,7 +11,7 @@ class FNN():
         """
         self.layer_sizes = layer_sizes
         self.T = len(layer_sizes) - 1
-        self.weights = [np.random.randn(y, x) for x, y in zip(layer_sizes[:-1]+np.array(1), layer_sizes[1:])] #weights creates an array containing two arrays: weights for V0 to V1 and weights for V1 to V2
+        self.weights = [np.random.randn(y, x) for x, y in zip(layer_sizes[:-1]+np.array(1), layer_sizes[1:])] #weights creates an array containing arrays for the layers (in our case two arrays: weights for V0 to V1 and weights for V1 to V2)
     
     def sigmoid(self, x):
         """The sigmoid function."""
@@ -59,12 +59,12 @@ class FNN():
         """
         n = len(training_data)
         for j in range(epochs):
-            random.shuffle(training_data)
-            mini_batches = [training_data[k:k+mini_batch_size] for k in range(0, n, mini_batch_size)]
-            for mini_batch in mini_batches:
+            random.shuffle(training_data) #shuffle training data
+            mini_batches = [training_data[k:k+mini_batch_size] for k in range(0, n, mini_batch_size)] #pick 5000 mini-batches each with size 10
+            for mini_batch in mini_batches: #iterate over all mini_batches (5000)
                 grad_initialise = [np.zeros(w.shape) for w in self.weights] #initialise array with shape w for later addition of every gradient
                 for x, y in mini_batch:
-                    gradient_xy = self.backprop(x, y)[0]
+                    gradient_xy = self.backprop(x, y)[0] #calculate gradients with backpropagation
                     gradient_sum = [grad_init+grad_xy for grad_init, grad_xy in zip(grad_initialise, gradient_xy)] #addition of single gradients
                 self.weights = [w-(eta/len(mini_batch))*g for w, g in zip(self.weights, gradient_sum)]
             if test_data:
